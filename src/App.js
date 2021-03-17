@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import './App.css';
+//import './App.css';
 //port Coin from './components/Coin/Coin';
 import ExchangeHeader from './components/ExchangeHeader';
 import CoinList from './components/CoinList/CoinList';
