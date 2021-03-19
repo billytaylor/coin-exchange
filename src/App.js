@@ -42,6 +42,7 @@ class App extends Component {
         },
       ]
     }
+    this.handleRefresh = this.handleRefresh.bind(this);
   }  
   
 
@@ -51,10 +52,27 @@ class App extends Component {
       <Div>
         <ExchangeHeader/>
         <AccountBalance amount={this.state.balance} />
-        <CoinList coinData={this.state.coinData}/>
+        <CoinList coinData={this.state.coinData} handleRefresh={this.handleRefresh}/>
       </Div>
     );
   }
+
+  handleRefresh(tickerToChange) {
+
+    // set the state
+    const newCoinData = this.state.coinData.map(function({ticker, name, price}) {
+      let newPrice = price;
+      if (ticker === tickerToChange) {
+        const randomPC = 0.995 + Math.random() * 0.01;
+        newPrice = newPrice * randomPC;
+      }
+      return {ticker, name, price: newPrice};
+    });
+    console.log(newCoinData);
+    this.setState({coinData: newCoinData});
+  
+  }
+
 }
 
 export default App;

@@ -13,17 +13,15 @@ export default class Coin extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            price: this.props.price,
-        }
         this.handleClick = this.handleClick.bind(this);
     }
-    
+
     handleClick(event) {
 
         //prevent default submit;
         event.preventDefault();
-
+        this.props.handleRefresh(this.props.ticker);
+/*
         // set the state
         const randomPC = 0.995 + Math.random() * 0.01;
         this.setState(function(oldState) {
@@ -31,7 +29,7 @@ export default class Coin extends Component {
                 price: oldState.price * randomPC
             }
         });
-
+*/
     }
 
     
@@ -41,7 +39,7 @@ export default class Coin extends Component {
             <CoinRow>
                 <td>{this.props.name}</td>
                 <td>{this.props.ticker}</td>
-                <td>${this.state.price}</td>
+                <td>${this.props.price}</td>
                 <td><button onClick={this.handleClick}>Refresh</button></td>
             </CoinRow>
         )
