@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-//import "./AccountBalance.css"
 import styled from 'styled-components'
 
 const Section = styled.section`
@@ -10,14 +9,26 @@ const Section = styled.section`
 `;
 
 export default class AccountBalance extends Component {
+    
     render() {
+        const buttonText = this.props.showBalance ?
+            "Hide Balance" : "Show Balance";
+
         return (
             <Section>
-            Balance: ${this.props.amount}
+            Balance: ${this.props.showBalance ? this.props.amount : "*****"}
+            <button onClick={this.toggleShowBalance}>{buttonText}</button>
             </Section>
         )
     }
+
+    toggleShowBalance = (event) => {
+        event.preventDefault();
+        this.props.toggleShowBalance();
+    }
 };
+
+
 
 AccountBalance.propTypes  = {
     amount: PropTypes.number.isRequired,
