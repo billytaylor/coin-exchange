@@ -1,8 +1,10 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 
 //import './App.css';
 //port Coin from './components/Coin/Coin';
 import ExchangeHeader from './components/ExchangeHeader';
+//import CoinpaprikaList from './components/CoinpaprikaList';
 import CoinList from './components/CoinList/CoinList';
 import AccountBalance from './components/AccountBalance/AccountBalance';
 import styled from 'styled-components';
@@ -13,78 +15,95 @@ background-color: blue;
 color: white;
 `;
 
-class App extends Component {
+const NUM_COINS = 4;
+  
+function App(props) {
 
-  state = {
-    showBalance: true,
-    coinData: [
-      {
-        name: "Bitcoin",
-        ticker: "BTC",
-        balance: 1,
-        price: 9999.99,
-      },
-      {
-        name: "Ethereum",
-        ticker: "ETH",
-        balance: 2,
-        price: 999.99,
-      },
-      {
-        name: "Tether",
-        ticker: "ESDT",
-        balance: 3,
-        price: 1.00,
-      },{
-        name: "Doge",
-        ticker: "DOG",
-        balance: 0,
-        price: 100.00,
-      },
-    ]
-  }
+  const [showBalance, setShowBalance] = useState(true);
+  const [coinData, setCoinData] = useState([]);
+  
+  const getPrice = async (id) => {
+    const response = await axios.get('https://api.coinpaprika.com/v1/tickers/'+id);
+    const coin = response.data;
+    console.log(coin.quotes.USD);
+    return parseFloat(coin.quotes.USD.price.toFixed(4));
+  };
 
-  render() {
+  const componentDidMount = async () => {
+    const response = await axios.get('https://api.coinpaprika.com/v1/coins');
+    const coinIds = response.data.slice(0,NUM_COINS).map(coin => coin.id);
+    const promises = coinIds.map(id => axios.get('https://api.coinpaprika.com/v1/tickers/'+id));
+    const responses = await Promise.all(promises);
 
-    let totalBalance = 0;
-    this.state.coinData.map((element) => {
-        return totalBalance += element.balance * element.price;
+    const newCoinData = responses.map(function(response) {
+      const coin = response.data;
+      console.log(coin.quotes.USD);
+      return {
+        key: coin.id,
+        id: coin.id,
+        ticker: coin.symbol,
+        name: coin.name,
+        balance: coin.rank,
+        price: parseFloat(coin.quotes.USD.price.toFixed(4)),
+      }
     });
-        
-    return (
-      <Div>
-        <ExchangeHeader/>
-        <AccountBalance 
-          amount={totalBalance} 
-          toggleShowBalance={this.toggleShowBalance} 
-          showBalance={this.state.showBalance}/>
-        <CoinList 
-          coinData={this.state.coinData} 
-          showBalance={this.state.showBalance}
-          handleRefresh={this.handleRefresh}/>
-      </Div>
-    );
+
+    setCoinData(newCoinData);
   }
 
-  toggleShowBalance = () => {
-    this.setState({showBalance: !this.state.showBalance});
+  useEffect(function(){
+    if (coinData.length === 0) {
+      componentDidMount();
+    }
+  });
+
+  const toggleShowBalance = () => {
+    setShowBalance(!showBalance);
   }
 
-  handleRefresh = (tickerToChange) => {
+  const handleRefresh = async (idToChange) => {
+
+    const newPrice = await getPrice(idToChange);
 
     // set the state
-    const newCoinData = this.state.coinData.map(function(values) {
+    const newCoinData = coinData.map(function(values) {
       let newValues = {...values};
-      if (newValues.ticker === tickerToChange) {
-        const randomPC = 0.995 + Math.random() * 0.01;
-        newValues.price *= randomPC;
+      if (newValues.id === idToChange) {
+        newValues.price = newPrice;
       }
       return newValues;
     });
+    //debugger;
     console.log(newCoinData);
-    this.setState({coinData: newCoinData});
+    setCoinData(newCoinData);
   
   }
+
+  let totalBalance = 0;
+  coinData && coinData.map((element) => {
+      return totalBalance += element.balance * element.price;
+  });
+      
+  return (
+    <Div>
+      <ExchangeHeader/>
+      <AccountBalance 
+        amount={totalBalance} 
+        toggleShowBalance={toggleShowBalance} 
+        showBalance={showBalance}/>
+      {
+        (coinData.length > 0) ? <CoinList 
+        coinData={coinData} 
+        showBalance={showBalance}
+        handleRefresh={handleRefresh}/>
+        : null
+      }
+      {//this.state.coinData ? 
+        // <CoinpaprikaList coins={this.state.coinData}/> : 
+        //   null
+      }
+    </Div>
+  );
 
 }
 

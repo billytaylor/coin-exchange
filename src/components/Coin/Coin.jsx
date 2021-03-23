@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
@@ -9,6 +9,7 @@ const CoinRow = styled.tr`
     }
 `;
 
+/*
 export default class Coin extends Component {
 
     handleClick = (event) => {
@@ -16,15 +17,6 @@ export default class Coin extends Component {
         //prevent default submit;
         event.preventDefault();
         this.props.handleRefresh(this.props.ticker);
-/*
-        // set the state
-        const randomPC = 0.995 + Math.random() * 0.01;
-        this.setState(function(oldState) {
-            return {
-                price: oldState.price * randomPC
-            }
-        });
-*/
     }
 
     
@@ -40,6 +32,28 @@ export default class Coin extends Component {
             </CoinRow>
         )
     }
+
+}
+*/
+
+export default function Coin(props) {
+
+    const handleClick = (event) => {
+
+        //prevent default submit;
+        event.preventDefault();
+        props.handleRefresh(props.id);
+    }
+
+    return (
+        <CoinRow>
+            <td>{props.name}</td>
+            <td>{props.ticker}</td>
+            <td>{props.showBalance ? props.balance : "*****"}</td>
+            <td>${props.price}</td>
+            <td><button onClick={handleClick}>Refresh</button></td>
+        </CoinRow>
+    )
 
 }
 
