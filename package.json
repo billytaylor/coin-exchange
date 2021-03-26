@@ -7,7 +7,6 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "axios": "^0.21.1",
-    "babel-loader": "^8.2.2",
     "postcss-selector-parser": "^6.0.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -16,11 +15,14 @@
     "typescript": "^4.2.3",
     "web-vitals": "^1.0.1"
   },
+  "homepage": "http://billytaylor.github.io/coin-exchange",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -39,5 +41,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^3.1.0"
   }
 }
