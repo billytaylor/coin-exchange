@@ -51,7 +51,8 @@ export default function Coin(props) {
             <td>{props.ticker}</td>
             <td>{props.showBalance ? props.balance : "*****"}</td>
             <td>${props.price}</td>
-            <td><button onClick={handleClick}>Refresh</button></td>
+            <td><button onClick={handleClick}
+                    className="btn btn-info">Refresh</button></td>
         </CoinRow>
     )
 

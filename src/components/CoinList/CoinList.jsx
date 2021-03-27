@@ -5,7 +5,7 @@ export default function CoinList(props) {
 
     return (
         <div>
-            <table>
+            <table className="table table-primary table-bordered">
                 <thead>
                 <tr>
                 <th>Name</th>

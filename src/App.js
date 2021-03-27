@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 
-//import './App.css';
-//port Coin from './components/Coin/Coin';
+
 import ExchangeHeader from './components/ExchangeHeader';
-//import CoinpaprikaList from './components/CoinpaprikaList';
 import CoinList from './components/CoinList/CoinList';
 import AccountBalance from './components/AccountBalance/AccountBalance';
 import styled from 'styled-components';
+import axios from 'axios'
+
+//import 'bootstrap/dist/css/bootstrap.css';
+import 'bootswatch/dist/flatly/bootstrap.min.css';
+import '@fortawesome/fontawesome-free/js/all';
 
 const Div = styled.div`
 text-align: center;
@@ -19,7 +21,7 @@ const NUM_COINS = 4;
   
 function App(props) {
 
-  const [showBalance, setShowBalance] = useState(true);
+  const [showBalance, setShowBalance] = useState(false);
   const [coinData, setCoinData] = useState([]);
   
   const getPrice = async (id) => {
@@ -79,18 +81,29 @@ function App(props) {
   
   }
 
+  const helicopterDrop = () => {
+    const newCoinData = coinData.map(function(values) {
+      let newValues = {...values};
+      newValues.balance += 1;
+      return newValues;
+    });
+    console.log(newCoinData);
+    setCoinData(newCoinData);
+  }
+  
   let totalBalance = 0;
   coinData && coinData.map((element) => {
       return totalBalance += element.balance * element.price;
   });
-      
+  
   return (
     <Div>
       <ExchangeHeader/>
       <AccountBalance 
         amount={totalBalance} 
         toggleShowBalance={toggleShowBalance} 
-        showBalance={showBalance}/>
+        showBalance={showBalance}
+        helicopterDrop={helicopterDrop} />
       {
         (coinData.length > 0) ? <CoinList 
         coinData={coinData} 
